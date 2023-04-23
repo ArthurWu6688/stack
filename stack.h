@@ -10,6 +10,9 @@
 #include <assert.h>
 #include <stdbool.h>
 
+
+///////////////////////////////////////////////////////////////////////////////////
+////顺序栈
 #define Stack_ElemType int
 #define STACK_DEFAULT_SIZE 8
 
@@ -88,6 +91,80 @@ void SeqStackDestroy(SeqStack *pst) {
     free(pst->base);
     pst->base = NULL;
     pst->capacity = pst->top = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+////链栈
+
+typedef struct StackNode {
+    Stack_ElemType data;
+    struct StackNode *next;
+} StackNode, *LinkStack;
+
+//函数声明
+void LinkStackInit(LinkStack *pst);
+
+void LinkStackPush(LinkStack *pst, Stack_ElemType value);
+
+bool LinkStackEmpty(LinkStack pst);
+
+void LinkStackShow(LinkStack pst);
+
+void LinkStackPop(LinkStack *pst);
+
+Stack_ElemType LinkStackTop(LinkStack pst);
+
+void LinkStackDestroy(LinkStack *pst);
+
+
+//函数定义
+void LinkStackInit(LinkStack *pst) {
+    assert(pst != NULL);
+    *pst = NULL;
+}
+
+void LinkStackPush(LinkStack *pst, Stack_ElemType value) {
+    assert(pst != NULL);
+    StackNode *s = (StackNode *) malloc(sizeof(StackNode));
+    s->data = value;
+    s->next = *pst;
+    *pst = s;
+}
+
+void LinkStackPop(LinkStack *pst) {
+    assert(pst != NULL);
+    if (LinkStackEmpty(*pst))
+        printf("栈已空，没有元素可以出栈\n");
+    else {
+        StackNode *p = *pst;
+        *pst = p->next;
+        free(p);
+    }
+}
+
+void LinkStackShow(LinkStack pst) {
+    while (pst != NULL) {
+        printf("%d\n", pst->data);
+        pst = pst->next;
+    }
+}
+
+bool LinkStackEmpty(LinkStack pst) {
+    return pst == NULL;
+}
+
+Stack_ElemType LinkStackTop(LinkStack pst) {
+    assert(pst != NULL);
+    return pst->data;
+}
+
+void LinkStackDestroy(LinkStack *pst) {
+    assert(pst != NULL);
+    while(*pst != NULL){
+        StackNode *p = *pst;
+        *pst = p->next;
+        free(p);
+    }
 }
 
 #endif //STACK_STACK_H
